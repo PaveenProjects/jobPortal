@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Admin Dashboard</title>
+	<meta charset="utf-8" />
+	<meta http-equiv="x-ua-compatible" content="ie=edge" />
+	<meta name="description" content="" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<link rel="stylesheet" type="text/css" media="all" th:href="@{/css/styles.css}" />
+	<link th:rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css} " />
+	<link th:rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}" />
+
+</head>
+
+<body>
+	<header class="navbar navbar-expand-lg navbar-dark">
+		<label class="mt-2 ms-5 font-weight-bold h5"><a th:href="@{/adminDashboard/}">hotdevjobs</a><span
+				class="logo_com font-weight-bold h5" style="color: white">
+				.com</span></label>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
+			aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarToggler">
+			<ul class="navbar-nav m-auto mt-2 mt-lg-0">
+
+
+				<label th:unless="${user.firstName != null && user.lastName != null}" th:text="${username}"
+				       class="nav-item nav-link px-2 me-3"></label>
+
+				<button class="myBtn-light me-5" onclick="window.location.href='/logout'">Logout</button>
+		</div>
+	</header>
+
+	<section class="section">
+
+
+		<article>
+
+			<div class="box" sec:authorize="hasAuthority('Admin')">
+				<h1 class="primary-title">Admin Dashboard</h1>
+				<div class="inner">
+				
+							<div class="card">
+
+								<div class="card-body">
+									<table class="table table-hover">
+										<tr class="bg-dark text-white">
+											<th>userId</th>
+											<th>Email</th>
+											<th>Active</th>
+											<th>password</th>
+											<th>Date</th>
+											<th>Role</th>
+											
+										</tr>
+										<tr th:each="ob:${list}">
+											<td th:text=${ob.userId}></td>
+											<td th:text=${ob.email}></td>
+											<td th:text=${ob.isActive}></td>
+											<td th:text=${ob.password}></td>
+											<td th:text=${ob.registrationDate}></td>
+											<td th:text=${ob.userTypeId.userTypeName}></td>
+											<td><a th:href="@{/admin/delete(id=${ob.userId})}" class= "btn btn-danger">DELETE <i class="fa fa-trash-o" aria-hidden="true"></i></a> |
+											    <a th:href="@{/admin/edit(id=${ob.userId})}" class="btn btn-warning">EDIT <i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
+										</tr>
+									</table>
+									
+								</div>
+								<div class="card-footer bg-white text-success" th:if="${message!=null}">
+									<span th:text="${message}"></span>
+								</div>
+							</div>
+						
+				</div>
+			</div>
+
+		</article>
+	</section>
+
+	<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+	<script type="text/javascript" th:src="@{/js/main.js}"></script>
+	<script>
+		$('#job').change(function () {
+			$('#hidJob').val($(this).val());
+		});
+		$('#loc').change(function () {
+			$('#hidLoc').val($(this).val());
+		});
+	</script>
+
+</body>
+
+</html>

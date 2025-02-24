@@ -1,0 +1,87 @@
+<html xmlns:th="https://www.thymeleaf.org/">
+  <head>
+	<head>
+
+
+	    <link th:rel="stylesheet" type="text/css" media="all" th:href="@{/summernote/summernote-lite.min.css}"/>
+	    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css} "/>
+	    <link rel="stylesheet" type="text/css" media="all"  th:href="@{/css/font-awesome.min.css}" />
+	    <link rel="stylesheet" type="text/css" media="all"  th:href="@{/css/style.css}" />
+	    <link rel="stylesheet" type="text/css" media="all"  th:href="@{/css/styles.css}" />
+	    <meta charset="ISO-8859-1">
+	</head>
+	<script>
+	    // Redirect to the admin dashboard after 2 seconds
+	    setTimeout(() => {
+	        window.location.href = '/admin/adminDashboard/';
+	    }, 4000);
+	</script>
+  <body>
+  <div class="col-5">
+    <div class="container">
+      <div class="card">
+        <div class="card-header bg-primary text-white text-center">
+            <h3>Edit User</h3>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/admin/update}" method="POST" id="invoiceForm" th:object="${user}">
+                <div class="row">
+                    <div class="col-2">
+                        <label for="id">USER ID</label>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" th:field="*{userId}" class="form-control" readonly/>
+                    </div>
+                </div><br/>
+                <div class="row">
+                    <div class="col-2">
+                        <label for="name">Email</label>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" th:field="*{email}" class="form-control"/>
+                    </div>
+                </div><br/>
+				<div class="row">
+				         <div class="col-2">
+				             <label for="name">Password</label>
+				         </div>
+				         <div class="col-4">
+				             <input type="text" th:field="*{password}" class="form-control" readonly/>
+				         </div>
+				     </div><br/>
+					 <div class="row">
+					          <div class="col-2">
+					              <label for="name">Date</label>
+					          </div>
+					          <div class="col-4">
+					              <input type="text" th:field="*{registrationDate}" class="form-control" readonly/>
+					          </div>
+					      </div><br/>
+            <div class="row">
+                    <div class="col-2">
+                        <label for="location">Active</label>
+                    </div>
+                    <div class="col-4">                   
+						<input type="text" id="booleanValue" name="booleanValue" th:value="*{isActive}" class="form-control"  readonly/>
+                    </div>
+                </div><br/>
+             <div class="row">
+                    <div class="col-2">
+                        <label for="amount">Role</label>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" th:field="*{userTypeId}" class="form-control" readonly />
+                    </div>
+                </div> <br/>
+                <button type="submit" class="btn btn-success">Update <i class="fa fa-wrench" aria-hidden="true"></i></button>             
+            </form>
+        </div>
+        <div class="card-footer">
+			<div th:if="${message}" class="alert alert-success">
+			    <p th:text="${message}"></p>
+			</div>
+		</div>
+      </div>
+    </div></div>
+  </body>
+</html>
