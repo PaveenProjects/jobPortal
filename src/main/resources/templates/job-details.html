@@ -101,6 +101,8 @@
             <a class="mt-3 ms-3 primary" id="back-link"><i class="fa-solid fa-angle-left me-1"></i> Back to Search
                 Results </a>
             <h1 class="primary-title mt-3"> Job Details </h1>
+<p th:style="'color: ' + (${status} == 'Rejected' ? 'red' : 'green')" 
+   th:text="${status != null ? (status == 'Rejected' ? 'Rejected' : (status == 'Approved' ? 'Approved' : 'In-Review')) : ''}"></p>
             <div class="ms-3">
                 <h4 th:text="${jobDetails.jobTitle}" class="job-title text-left">Software Engineer</h4>
                 <div class="mt-1">
@@ -164,8 +166,10 @@
                     <div class="col-md-3">
                         <form th:action="@{/job-details/apply/{id}(id=${jobDetails.jobPostId})}" th:object="${applyJob}"
                               method="post">
-                            <button class="btn-sec btn-red w-100" type="submit" th:if="${alreadyApplied == false}">Apply
+                            <button class="btn-sec btn-red w-100" type="submit" th:if="${alreadyApplied == false and isProfileFilled == true }">Apply
                                 Now
+                            </button>
+                            <button class="btn-sec btn-red w-100" type="submit" disabled th:if="${alreadyApplied == false and isProfileFilled == false }">To Apply Job ! Please fill profile details
                             </button>
                             <button class="btn-sec btn-red w-100" disabled th:if="${alreadyApplied == true}">Already
                                 Applied
@@ -183,6 +187,7 @@
                             </button>
                         </form>
                     </div>
+      
                 </div>
             </div>
 

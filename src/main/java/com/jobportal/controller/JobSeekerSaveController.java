@@ -133,7 +133,7 @@ System.out.println("rec job ====================");
             jobPost.add(jobSeekerApply.getJob());
         }
 
-        model.addAttribute("jobPost", jobPost);
+        model.addAttribute("jobPost", jobSeekerApplyList);
         model.addAttribute("user", currentUserProfile);
 
         return "applied-jobs-rec";

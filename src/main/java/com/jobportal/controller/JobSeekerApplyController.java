@@ -52,9 +52,11 @@ public class JobSeekerApplyController {
                 }
             } else {
                 JobSeekerProfile user = jobSeekerProfileService.getCurrentSeekerProfile();
+                boolean isProfileFilled=false;
                 if (user != null) {
                     boolean exists = false;
                     boolean saved = false;
+                    
                     String status="";
                     for (JobSeekerApply jobSeekerApply : jobSeekerApplyList) {
                         if (jobSeekerApply.getUserId().getUserAccountId() == user.getUserAccountId()) {
@@ -69,6 +71,10 @@ public class JobSeekerApplyController {
                             break;
                         }
                     }
+                    if(user.getFirstName()!=null) {
+                    	isProfileFilled=true;
+                    }
+                    model.addAttribute("isProfileFilled", isProfileFilled);
                     model.addAttribute("alreadyApplied", exists);
                     model.addAttribute("alreadySaved", saved);
                     model.addAttribute("status",status);
@@ -99,9 +105,8 @@ public class JobSeekerApplyController {
                 jobSeekerApply.setJob(jobPostActivity);
                 jobSeekerApply.setApplyDate(new Date());
                 jobSeekerApply.setStatus("In-Review");
-            } else {
-                throw new RuntimeException("User not found");
-            }
+              
+            } 
             jobSeekerApplyService.addNew(jobSeekerApply);
         }
 
