@@ -92,6 +92,16 @@ public class UsersService {
     public Optional<Users> getUserByEmail(String email) {
         return usersRepository.findByEmail(email);
     }
+
+	public Optional<Users> findByName(String name) {
+		// TODO Auto-generated method stub
+		return usersRepository.findByEmail(name);
+	}
+
+	public void changePassword(String encode, int i) {
+		usersRepository.changePassword(encode,i);
+		
+	}
     
 }
 

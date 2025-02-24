@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Portal Feedback Form</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* Reset default styles */
+    body, h1, h2, h3, textarea, select, input {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+    }
+    body {
+      background-color: #f4f7f6;
+      padding: 50px 0;
+    }
+    .content {
+      background-color: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 800px;
+      margin: auto;
+      padding: 40px;
+      position: relative;
+    }
+
+    header {
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    img {
+      width: 100%;
+      max-width: 500px;
+      margin-top: 20px;
+    }
+
+    main h2 {
+      margin-top: 30px;
+      font-size: 1.5em;
+    }
+
+    /* Rating Slider */
+    .tickmarks {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+
+    .tickmarks span {
+      width: 10%;
+      text-align: center;
+      font-size: 0.9em;
+      color: #7d7d7d;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 10px;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      border-radius: 10px;
+      outline: none;
+      margin-top: 10px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 25px;
+      height: 25px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+    }
+
+    /* Textarea */
+    textarea {
+      width: 100%;
+      padding: 15px;
+      font-size: 1em;
+      background-color: #f5f5f5;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      margin-top: 20px;
+      resize: none;
+    }
+
+    textarea::placeholder {
+      font-style: italic;
+      color: #bbb;
+    }
+
+    /* Input Fields for Email, Name */
+    input[type="email"], input[type="text"] {
+      width: 100%;
+      padding: 15px;
+      font-size: 1em;
+      background-color: #f5f5f5;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      margin-top: 20px;
+    }
+
+    /* Button Styles */
+    .mv-bar {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    button.mv-save {
+      padding: 15px 30px;
+      font-size: 1.2em;
+      background-color: #00c6ff;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button.mv-save:hover {
+      background-color: #0072ff;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    footer h3 {
+      font-size: 1.2em;
+      color: #333;
+    }
+
+    footer pre {
+      font-size: 1em;
+      background-color: #f7f7f7;
+      padding: 20px;
+      border-radius: 10px;
+      overflow: auto;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="content">
+    <header>
+      <h1>Your Feedback is Valuable!</h1>
+      <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1457119/feedback-form-template.svg" alt="Feedback illustration for job portal">
+    </header>
+    
+    <main>
+      <form id="feedback-form" th:action="@{/feedback/submitFeedback}"   th:object="${feedback}" method="POST">
+        <label>
+          <h2>Email</h2>
+          <input id="email" name="email" type="email"  th:field="*{email}" placeholder="Enter your email" required />
+        </label>
+
+        <label>
+          <h2>First Name</h2>
+          <input id="first-name" name="firstName"   th:field="*{firstName}" type="text" placeholder="Enter your first name" required />
+        </label>
+
+        <label>
+          <h2>Last Name</h2>
+          <input id="last-name" name="lastName" type="text" placeholder="Enter your last name" required />
+        </label>
+
+        <label>
+          <h2>How satisfied are you with the job opportunities available on the portal?</h2>
+          <div class="tickmarks">
+            <span>Not at all satisfied</span>
+            <span>Extremely satisfied</span>
+          </div>
+          <input id="job-opportunities" name="jobOpportunities" type="range" max="10" />
+        </label>
+
+        <label>
+          <h2>How easy was it to find suitable job listings?</h2>
+          <div class="tickmarks">
+            <span>Very difficult</span>
+            <span>Very easy</span>
+          </div>
+          <input id="job-search" name="jobSearch" type="range" max="10" />
+        </label>
+
+        <label>
+          <h2>How easy was it to apply to jobs on the portal?</h2>
+          <div class="tickmarks">
+            <span>Very difficult</span>
+            <span>Very easy</span>
+          </div>
+          <input id="job-application" name="jobApplication" type="range" max="10" />
+        </label>
+
+        <label>
+          <h2>Overall, how would you rate your experience with the portal?</h2>
+          <div class="tickmarks">
+            <span>Very poor</span>
+            <span>Excellent</span>
+          </div>
+          <input id="overall-experience" name="overallExperience" type="range" max="10" />
+        </label>
+
+        <textarea id="comment" name="comment" placeholder="Please provide any additional feedback or suggestions..."></textarea>
+
+        <div class="mv-bar">
+          <button type="submit" class="mv-save">Submit Feedback</button>
+        </div>
+      </form>
+    </main>
+  </div>
+
+</body>
+</html>

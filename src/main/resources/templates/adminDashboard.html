@@ -29,7 +29,10 @@
 
 		<div class="collapse navbar-collapse" id="navbarToggler">
 			<ul class="navbar-nav m-auto mt-2 mt-lg-0">
-
+				<li class="nav-item ">
+						              <a sec:authorize="hasAuthority('Admin')" class="nav-link" th:href="@{/feedback}">
+						                  <i class="fa-solid fa-pencil"></i>FeedBack Analysis</a>
+						          </li>
 
 				<label th:unless="${user.firstName != null && user.lastName != null}" th:text="${username}"
 				       class="nav-item nav-link px-2 me-3"></label>
