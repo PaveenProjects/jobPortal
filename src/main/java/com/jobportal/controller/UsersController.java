@@ -120,7 +120,7 @@ System.out.println(user.get().getUserId());
 		} else {
 			model.addAttribute("message", "New Password and confirm password does not matched");
 		}
-		return "redirect:/changepasswordForm";
+		return "redirect:/";
 	}
 	 
 
@@ -129,7 +129,8 @@ System.out.println(user.get().getUserId());
 		boolean isMatch = passwordEncoder.matches(oldPassword, passwordEncoder.encode(newPassword));
 		System.out.println("Password matches: " + isMatch);
 		
-		if (isMatch) {
+		if (!isMatch) {
+			System.out.println("Password changed ");
 			usersService.changePassword(passwordEncoder.encode(newPassword),i);
 			return true;
 		} else {

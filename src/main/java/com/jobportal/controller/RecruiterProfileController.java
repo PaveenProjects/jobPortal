@@ -9,7 +9,11 @@ import com.jobportal.repository.UsersRepository;
 import com.jobportal.services.JobPostActivityService;
 import com.jobportal.services.JobSeekerApplyService;
 import com.jobportal.services.RecruiterProfileService;
+import com.jobportal.services.UsersService;
 import com.jobportal.util.FileUploadUtil;
+
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,14 +43,17 @@ public class RecruiterProfileController {
     private final JobSeekerApplyService jobSeekerApplyService;
     private final JobPostActivityService jobPostActivityService;
     private final JobSeekerApplyRepository jobSeekerApplyRepository;
+    private final JavaMailSender mailSender;
+    private final UsersService usersService;
 
-
-    public RecruiterProfileController(UsersRepository usersRepository, RecruiterProfileService recruiterProfileService,JobSeekerApplyService jobSeekerApplyService,JobPostActivityService jobPostActivityService,JobSeekerApplyRepository jobSeekerApplyRepository) {
+    public RecruiterProfileController(UsersRepository usersRepository, RecruiterProfileService recruiterProfileService,JobSeekerApplyService jobSeekerApplyService,JobPostActivityService jobPostActivityService,JobSeekerApplyRepository jobSeekerApplyRepository, JavaMailSender mailSender,UsersService usersService) {
         this.usersRepository = usersRepository;
         this.recruiterProfileService = recruiterProfileService;
         this.jobSeekerApplyService = jobSeekerApplyService;
         this.jobPostActivityService = jobPostActivityService;
         this.jobSeekerApplyRepository = jobSeekerApplyRepository;
+        this.mailSender = mailSender;
+        this.usersService = usersService;
     }
 
     @GetMapping("/")
@@ -108,10 +115,24 @@ public class RecruiterProfileController {
          for (JobSeekerApply jobSeekerApply : jobSeekerApplyList) {
              jobPost.add(jobSeekerApply.getJob());
          }
-
+        String email=usersService.getCurrentUser().getEmail();
+         sendEmail(email, "Job Application Status !", "You application has been "+ status);
          model.addAttribute("jobPost", jobPost);
          
          return "redirect:/dashboard/";
+	}
+    
+    public void sendEmail(String receiver, String subject, String message) {
+
+		System.out.println("Receiver mail " + receiver);
+		SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+		simpleMailMessage.setTo(receiver);
+		simpleMailMessage.setSubject(subject);
+		simpleMailMessage.setText(message);
+		simpleMailMessage.setFrom("praveenpinninti1@gmail.com");
+
+		mailSender.send(simpleMailMessage);
+
 	}
 }
 
