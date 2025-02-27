@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -72,7 +73,7 @@ public class JobPostActivityController {
         model.addAttribute("location", location);
 
         LocalDate searchDate = null;
-        List<JobPostActivity> jobPost = null;
+        List<JobPostActivity> jobPost = new ArrayList<JobPostActivity>();
         boolean dateSearchFlag = true;
         boolean remote = true;
         boolean type = true;
@@ -102,7 +103,24 @@ public class JobPostActivityController {
         }
 
         if (!dateSearchFlag && !remote && !type && !StringUtils.hasText(job) && !StringUtils.hasText(location)) {
-            jobPost = jobPostActivityService.getAll();
+        	
+             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+             if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            	 if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("Recruiter"))) {
+            		 JobSeekerProfile jobSeekerProfile = (JobSeekerProfile)usersService.getCurrentUserProfile();
+                 	List<Skills> jobSeekerSkills=jobSeekerProfile.getSkills();
+                     List<JobPostActivity> jobPostList = jobPostActivityService.getAll();
+                     for(JobPostActivity jobPostAct:jobPostList) {
+                     	String jobTitle=jobPostAct.getJobTitle();
+                     	for(Skills skill:jobSeekerSkills) {
+                     		if(jobTitle.toLowerCase().contains(skill.getName().toLowerCase())) {
+                     			jobPost.add(jobPostAct);
+                     		}
+                     	}
+                     }
+            	 }
+             }
+        	
         } else {
             jobPost = jobPostActivityService.search(job, location, Arrays.asList(partTime, fullTime, freelance),
                     Arrays.asList(remoteOnly, officeOnly, partialRemote), searchDate);
