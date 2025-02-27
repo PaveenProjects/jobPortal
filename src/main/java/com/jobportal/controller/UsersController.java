@@ -72,8 +72,19 @@ public class UsersController {
 			return "register";
 		}
 		usersService.addNew(users);
-
-		sendEmail(users.getEmail(), "Reigstration Successful!", "Thanks for Registring with us");
+		 String body="Dear User,\r\n"
+	        		+ "\r\n"
+	        		+ "Thank you for registering with CareerConnect! Your account has been successfully created, and you’re now ready to explore exciting job opportunities.\r\n"
+	        		+ "\r\n"
+	        		+ "If you have any questions, feel free to contact our support team at carrerconnect@support.com.\r\n"
+	        		+ "\r\n"
+	        		+ "We’re excited to have you on board and wish you the best in your job search!\r\n"
+	        		+ "\r\n"
+	        		+ "Best Regards,\r\n"
+	        		+ "The CareerConnect Team\r\n"
+	        		+ "WWW.careerconnect.com\r\n"
+	        		+ "carrerconnect@support.com";
+		sendEmail(users.getEmail(), "Welcome to CareerConnect – Your Account is Successfully Registered!", body);
 		return "redirect:/dashboard/";
 	}
 

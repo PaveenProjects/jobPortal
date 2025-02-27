@@ -2,6 +2,7 @@ package com.jobportal.controller;
 
 import com.jobportal.entity.JobPostActivity;
 import com.jobportal.entity.JobSeekerApply;
+import com.jobportal.entity.JobSeekerProfile;
 import com.jobportal.entity.RecruiterProfile;
 import com.jobportal.entity.Users;
 import com.jobportal.repository.JobSeekerApplyRepository;
@@ -104,10 +105,16 @@ public class RecruiterProfileController {
     
     @GetMapping("/job/update/{id}/{status}")
 	public String getEditPage(Model model, RedirectAttributes attributes, @PathVariable("id") int id,@PathVariable("status") String status) {
-    	 List<JobPostActivity> jobPost = new ArrayList<>();
+    	String jobTitle="";
+    	String companyname="";
+    	String email="";
+    	List<JobPostActivity> jobPost = new ArrayList<>();
     	 JobPostActivity jobDetails = jobPostActivityService.getOne(id);
          List<JobSeekerApply> jobSeekerApplyList = jobSeekerApplyService.getJobCandidates(jobDetails);
          for (JobSeekerApply jobSeekerApply : jobSeekerApplyList) {
+	        	 jobTitle=jobSeekerApply.getJob().getJobTitle();
+	        	 companyname= jobSeekerApply.getJob().getJobCompanyId().getName();
+	        	 email=jobSeekerApply.getUserId().getUserId().getEmail();
         	 	jobSeekerApply.setStatus(status);
         	 	jobSeekerApplyRepository.save(jobSeekerApply);
              }
@@ -115,8 +122,42 @@ public class RecruiterProfileController {
          for (JobSeekerApply jobSeekerApply : jobSeekerApplyList) {
              jobPost.add(jobSeekerApply.getJob());
          }
-        String email=usersService.getCurrentUser().getEmail();
-         sendEmail(email, "Job Application Status !", "You application has been "+ status);
+       
+        String body="";
+        if(status.equalsIgnoreCase("Rejected")) {
+        	 body = "Dear User,\r\n"
+             		+ "\r\n"
+             		+ "Thank you for your interest in the "+jobTitle+" position at "+companyname+" through CarrerConnect. After careful consideration, we regret to inform you that we will not be moving forward with your application at this time.\r\n"
+             		+ "\r\n"
+             		+ "🔹 Job Title: "+jobTitle+"\r\n"
+             		+ "🔹 Company Name: "+companyname+"\r\n"
+             		+ "\r\n"
+             		+ "We truly appreciate the time and effort you invested in your application. While we won’t be proceeding with your candidacy, we encourage you to apply for future openings that may align with your experience and career goals.\r\n"
+             		+ "\r\n"
+             		+ "If you have any questions, feel free to contact us at carrerconnect@support.com.\r\n"
+             		+ "\r\n"
+             		+ "We wish you the best in your job search.\r\n"
+             		+ "\r\n"
+             		+ "Best regards,\r\n"
+             		+ "The CarrerConnect Team";
+        }else {
+        	body="Dear User,\r\n"
+        			+ "\r\n"
+        			+ "We’re excited to inform you that your application for the "+jobTitle+" position at "+companyname+" has been successfully reviewed and approved on CarrerConnect!\r\n"
+        			+ "\r\n"
+        			+ "🔹 Job Title: "+jobTitle+"\r\n"
+        			+ "🔹 Company Name: "+companyname+"\r\n"
+        			+ "\r\n"
+        			+ "If you have any questions or need further assistance, feel free to contact us at carrerconnect@support.com.\r\n"
+        			+ "\r\n"
+        			+ "Best of luck with the next steps in your hiring journey!\r\n"
+        			+ "\r\n"
+        			+ "Best regards,\r\n"
+        			+ "The CarrerConnect Team";
+        }
+       
+       
+         sendEmail(email, "Your Job Application Has Been "+status, body);
          model.addAttribute("jobPost", jobPost);
          
          return "redirect:/dashboard/";
