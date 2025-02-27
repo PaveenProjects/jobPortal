@@ -87,12 +87,13 @@
                                                 class="form-control"
                                                 th:field="*{userTypeId}"
                                         >
-                                            <th:block th:each="userType :${getAllTypes}">
-                                                <option
-                                                        th:text="${userType.userTypeName}"
-                                                        th:value="${userType.userTypeId}"
-                                                ></option>
-                                            </th:block>
+										<th:block th:each="userType : ${getAllTypes}">
+										    <option 
+										        th:if="${userType.userTypeName != 'Admin'}"
+										        th:text="${userType.userTypeName}" 
+										        th:value="${userType.userTypeId}">
+										    </option>
+										</th:block>
                                         </select>
                                     </div>
                                 </div>
