@@ -81,6 +81,7 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
+						<th>Job Seeker Name</th>
                         	<th>Job Title</th>
 											<th>Location</th>
 											<th>Company Name</th>
@@ -91,7 +92,9 @@
                     </tr>
                 </thead>
                 <tbody>
+					
                     <tr th:each="jobPost:${jobPost}">
+						<td th:text=${jobPost.userId.firstName}></td>
  <td th:text=${jobPost.job.jobTitle}></td>
 											<td th:text=${jobPost.job.jobLocationId.city}+${jobPost.job.jobLocationId.state}></td>
 											<td th:text=${jobPost.job.jobCompanyId.name}></td>

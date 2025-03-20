@@ -1,9 +1,26 @@
 package com.jobportal.controller;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import com.jobportal.entity.JobCompany;
+import com.jobportal.entity.JobLocation;
 import com.jobportal.entity.JobPostActivity;
 import com.jobportal.entity.JobSeekerApply;
 import com.jobportal.entity.JobSeekerProfile;
 import com.jobportal.entity.JobSeekerSave;
+import com.jobportal.entity.RecruiterProfile;
 import com.jobportal.entity.Users;
 import com.jobportal.repository.JobSeekerApplyRepository;
 import com.jobportal.services.JobPostActivityService;
@@ -11,22 +28,7 @@ import com.jobportal.services.JobSeekerProfileService;
 import com.jobportal.services.JobSeekerSaveService;
 import com.jobportal.services.UsersService;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.*;
 
 @Controller
 public class JobSeekerSaveController {
@@ -127,14 +129,79 @@ public class JobSeekerSaveController {
 System.out.println("rec job ====================");
         List<JobPostActivity> jobPost = new ArrayList<>();
         Object currentUserProfile = usersService.getCurrentUserProfile();
+        RecruiterProfile profile = (RecruiterProfile) currentUserProfile;
+        Long userAccountId = (long) profile.getUserAccountId();
+        System.out.println("current"+currentUserProfile);
+        
+        List<Object[]> results = jobSeekerApplyRepository.findJobSeekerApplicationsByPostedById(userAccountId);
+        List<JobSeekerApply> jobSeekerApplies = new ArrayList<>();
+System.out.println(results);
+        for (Object[] result : results) {
+            Integer jobSeekerApplyId = (Integer) result[0];
+            Integer userId = (Integer) result[1];
+            Integer jobPostId = (Integer) result[2];
+            Date applyDate = (Date) result[3];
+            String coverLetter = (String) result[4];
+            String status = (String) result[5];
+            String companyName = (String) result[6];
+            String locationCity = (String) result[7];
+            String locationState = (String) result[8];
+            String locationCountry = (String) result[9];
+            String fullName = (String) result[10];
+            String jobTitle = (String) result[11];
+
+            // Create the JobSeekerApply object
+            JobSeekerApply jobSeekerApply = new JobSeekerApply();
+            jobSeekerApply.setId(jobSeekerApplyId);
+            jobSeekerApply.setApplyDate(applyDate);
+            jobSeekerApply.setCoverLetter(coverLetter);
+            jobSeekerApply.setStatus(status);
+
+            // Set the JobSeekerProfile (userId) and JobPostActivity (job) manually if needed
+            JobSeekerProfile userProfile = new JobSeekerProfile();
+            Users users=new Users();
+            users.setUserId(userId);
+            System.out.println(userId);
+            userProfile.setUserAccountId(userId);
+            userProfile.setUserId(users);
+            userProfile.setFirstName(fullName);
+            jobSeekerApply.setUserId(userProfile);
+            JobLocation job=new JobLocation();
+            job.setId(jobPostId);
+            
+            JobCompany jobCompany=new JobCompany();
+            jobCompany.setName(companyName);
+           
+            JobLocation jobLocation =new JobLocation();
+            jobLocation.setCity(locationCity);
+            jobLocation.setState(locationState);
+            
+            JobPostActivity jobPostActivity = new JobPostActivity();
+            jobPostActivity.setJobPostId(jobPostId);
+            jobPostActivity.setJobLocationId(job);
+            jobPostActivity.setJobCompanyId(jobCompany);
+            jobPostActivity.setJobLocationId(jobLocation);
+            jobSeekerApply.setJob(jobPostActivity);
+            jobPostActivity.setJobTitle(jobTitle);
+            jobPostActivity.setPostedDate(applyDate);
+
+            // Optionally set company and location info if required for display, logging, or further processing
+            System.out.println("Company: " + companyName + ", Location: " + locationCity + ", " + locationState + ", " + locationCountry);
+            System.out.println("Applicant Full Name: " + fullName);
+
+            jobSeekerApplies.add(jobSeekerApply);
+        }
 
         List<JobSeekerApply> jobSeekerApplyList = jobSeekerApplyRepository.findAll();
-        for (JobSeekerApply jobSeekerApply : jobSeekerApplyList) {
+        System.out.println(jobSeekerApplyList);
+        System.out.println(jobSeekerApplies);
+        for (JobSeekerApply jobSeekerApply : jobSeekerApplies) {
             jobPost.add(jobSeekerApply.getJob());
         }
 
-        model.addAttribute("jobPost", jobSeekerApplyList);
+        model.addAttribute("jobPost", jobSeekerApplies);
         model.addAttribute("user", currentUserProfile);
+        model.addAttribute("name", currentUserProfile);
 
         return "applied-jobs-rec";
     }

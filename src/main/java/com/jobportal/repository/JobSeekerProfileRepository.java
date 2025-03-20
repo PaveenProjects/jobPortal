@@ -16,5 +16,7 @@ public interface JobSeekerProfileRepository extends JpaRepository<JobSeekerProfi
     @Transactional
     @Query(value = "DELETE FROM job_seeker_profile WHERE user_account_id = :userId", nativeQuery = true)
     void deleteByUserId(@Param("userId") Long userId);
+	
+
 
 }

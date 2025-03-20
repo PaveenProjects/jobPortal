@@ -269,7 +269,7 @@ public class JobPostActivityController {
         return "redirect:/dashboard/";
     }
 
-    @GetMapping("dashboard/edit/{id}")
+    @PostMapping("dashboard/edit/{id}")
     public String editJob(@PathVariable("id") int id, Model model) {
 
         JobPostActivity jobPostActivity = jobPostActivityService.getOne(id);
@@ -277,6 +277,15 @@ public class JobPostActivityController {
         model.addAttribute("user", usersService.getCurrentUserProfile());
         return "add-jobs";
     }
+    
+//    @PostMapping("dashboard/delete/{id}")
+//    public String deleteJob(@PathVariable("id") int id, Model model) {
+//
+//        JobPostActivity jobPostActivity = jobPostActivityService.getOne(id);
+//        model.addAttribute("jobPostActivity", jobPostActivity);
+//        model.addAttribute("user", usersService.getCurrentUserProfile());
+//        return "add-jobs";
+//    }
 }
 
 

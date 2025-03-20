@@ -91,8 +91,13 @@ public class AdminController {
 	@Transactional
 	public String deleteInvoice(@RequestParam Long id, RedirectAttributes attributes) {
 		try {
-			jobSeekerProfileRepository.deleteByUserId(id);
-		    usersRepository.deleteByUserId(id);
+			// First delete the dependent records
+			usersRepository.deleteRecruiterProfileByUserId(id);
+			usersRepository.deleteJobSeekerProfileByUserId(id);
+			usersRepository.deleteJobPostActivity(id);
+
+	        // Now delete the user
+			usersRepository.deleteUserByUserId(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			attributes.addAttribute("message", e.getMessage());
