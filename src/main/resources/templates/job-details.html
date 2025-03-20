@@ -101,8 +101,11 @@
             <a class="mt-3 ms-3 primary" id="back-link"><i class="fa-solid fa-angle-left me-1"></i> Back to Search
                 Results </a>
             <h1 class="primary-title mt-3"> Job Details </h1>
-<p th:style="'color: ' + (${status} == 'Rejected' ? 'red' : 'green')" 
-   th:text="${status != null ? (status == 'Rejected' ? 'Rejected' : (status == 'Approved' ? 'Approved' : 'In-Review')) : ''}"></p>
+			<p th:if="${alreadyApplied == true}" 
+			   th:style="'color: ' + (${status} == 'Rejected' ? 'red' : 'green')" 
+			   th:text="${status != null ? (status == 'Rejected' ? 'Rejected' : (status == 'Approved' ? 'Approved' : 'In-Review')) : ''}"></p>
+
+			<p th:if="${alreadyApplied == false}"> </p>
             <div class="ms-3">
                 <h4 th:text="${jobDetails.jobTitle}" class="job-title text-left">Software Engineer</h4>
                 <div class="mt-1">
