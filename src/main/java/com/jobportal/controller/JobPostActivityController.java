@@ -32,7 +32,7 @@ public class JobPostActivityController {
     private final JobPostActivityService jobPostActivityService;
     private final JobSeekerApplyService jobSeekerApplyService;
     private final JobSeekerSaveService jobSeekerSaveService;
-
+    
     @Autowired
     public JobPostActivityController(UsersService usersService, JobPostActivityService jobPostActivityService, JobSeekerApplyService jobSeekerApplyService, JobSeekerSaveService jobSeekerSaveService) {
         this.usersService = usersService;
@@ -278,14 +278,26 @@ public class JobPostActivityController {
         return "add-jobs";
     }
     
-//    @PostMapping("dashboard/delete/{id}")
-//    public String deleteJob(@PathVariable("id") int id, Model model) {
-//
-//        JobPostActivity jobPostActivity = jobPostActivityService.getOne(id);
-//        model.addAttribute("jobPostActivity", jobPostActivity);
-//        model.addAttribute("user", usersService.getCurrentUserProfile());
-//        return "add-jobs";
-//    }
+    @PostMapping("dashboard/delete/{id}")
+    public String deleteJob(@PathVariable("id") int id, Model model) {
+
+        JobPostActivity jobPostActivity = jobPostActivityService.getOne(id);
+        model.addAttribute("jobPostActivity", jobPostActivity);
+        model.addAttribute("user", usersService.getCurrentUserProfile());
+        return "add-jobs";
+    }
+    
+    @PostMapping("dashboard/test/{id}")
+    public String test(@PathVariable("id") int id, Model model) {
+
+    	  JobPostActivity jobPostActivity = jobPostActivityService.getOne(id);
+    	  jobSeekerApplyService.deleteJob(id);
+    	  jobPostActivityService.deleteJob(id);
+    
+          model.addAttribute("jobPostActivity", jobPostActivity);
+          model.addAttribute("user", usersService.getCurrentUserProfile());
+          return "redirect:/dashboard/";
+    }
 }
 
 

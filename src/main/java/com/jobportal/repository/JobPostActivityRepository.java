@@ -47,4 +47,8 @@ public interface JobPostActivityRepository extends JpaRepository<JobPostActivity
                                  @Param("remote") List<String> remote,
                                  @Param("type") List<String> type,
                                  @Param("date") LocalDate searchDate);
+
+    
+    @Query(value = "delete from job_post_activity where job_post_id=:id",nativeQuery = true)
+	void deleteJob(int id);
 }

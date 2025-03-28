@@ -3,6 +3,7 @@ package com.jobportal.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Repository;
 import com.jobportal.entity.JobPostActivity;
 import com.jobportal.entity.JobSeekerApply;
 import com.jobportal.entity.JobSeekerProfile;
+
+import jakarta.transaction.Transactional;
 
 @Repository
 public interface JobSeekerApplyRepository extends JpaRepository<JobSeekerApply, Integer> {
@@ -28,4 +31,9 @@ public interface JobSeekerApplyRepository extends JpaRepository<JobSeekerApply, 
             "JOIN job_seeker_profile jsp ON jsa.user_id = jsp.user_account_id " +
             "WHERE jpa.posted_by_id = :postedById", nativeQuery = true)
 List<Object[]> findJobSeekerApplicationsByPostedById(@Param("postedById") Long postedById);
+
+@Modifying  // This tells JPA it's a modification query
+@Transactional 
+@Query(value = "DELETE FROM job_seeker_apply WHERE job IN (SELECT job_post_id FROM job_post_activity WHERE job_post_id =:id)",nativeQuery = true)
+	void deleteJobApply(int id);
 }
